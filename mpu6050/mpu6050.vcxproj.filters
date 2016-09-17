@@ -2,31 +2,31 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <Filter Include="Source files">
-      <UniqueIdentifier>{0723bba4-a0f8-4ea3-9268-b4230ae520fb}</UniqueIdentifier>
+      <UniqueIdentifier>{12f88ddb-8b4f-4605-bdd2-881047dd5c00}</UniqueIdentifier>
       <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
     </Filter>
     <Filter Include="Header files">
-      <UniqueIdentifier>{0826286a-58d8-4c53-aaa1-8ec8a630a37a}</UniqueIdentifier>
+      <UniqueIdentifier>{06f56735-79e8-45c8-99c6-b7834b621d68}</UniqueIdentifier>
       <Extensions>h;hpp;hxx;hm;inl;inc;xsd</Extensions>
     </Filter>
     <Filter Include="Make files">
-      <UniqueIdentifier>{8a3eb8dd-34e3-4f99-a07a-90150f235863}</UniqueIdentifier>
+      <UniqueIdentifier>{9810f19a-1255-4071-af85-66769e9e5078}</UniqueIdentifier>
       <Extensions>*.mak</Extensions>
     </Filter>
     <Filter Include="VisualGDB settings">
-      <UniqueIdentifier>{c7839c56-184b-4895-80b0-ce57255eb8de}</UniqueIdentifier>
+      <UniqueIdentifier>{022fb0b3-bb7f-4181-92a8-a8a05b403086}</UniqueIdentifier>
       <Extensions>*.vgdbsettings</Extensions>
     </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="Makefile" />
-    <None Include="HMC5883L-Debug.vgdbsettings">
+    <None Include="mpu6050-Debug.vgdbsettings">
       <Filter>VisualGDB settings</Filter>
     </None>
     <None Include="release.mak">
       <Filter>Make files</Filter>
     </None>
-    <None Include="HMC5883L-Release.vgdbsettings">
+    <None Include="mpu6050-Release.vgdbsettings">
       <Filter>VisualGDB settings</Filter>
     </None>
   </ItemGroup>
@@ -34,7 +34,7 @@
     <ClInclude Include="include\arduino_i2c.h">
       <Filter>Header files</Filter>
     </ClInclude>
-    <ClInclude Include="include\hmc5883l.h">
+    <ClInclude Include="include\mpu6050.h">
       <Filter>Header files</Filter>
     </ClInclude>
     <ClInclude Include="include\sensor.h">
@@ -42,13 +42,13 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\hmc5883l.cpp">
-      <Filter>Source files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\main.cpp">
+    <ClCompile Include="src\mpu6050.cpp">
       <Filter>Source files</Filter>
     </ClCompile>
     <ClCompile Include="src\sensor.cpp">
+      <Filter>Source files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\main.cpp">
       <Filter>Source files</Filter>
     </ClCompile>
   </ItemGroup>

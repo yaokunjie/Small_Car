@@ -11,7 +11,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{839992B3-69B4-43AF-909A-5A471FE95E1E}</ProjectGuid>
+    <ProjectGuid>{2EDA1E63-C28A-49D1-B9C5-E9525CA7010C}</ProjectGuid>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -43,7 +43,7 @@
     <NMakeBuildCommandLine>"$(VISUALGDB_DIR)\VisualGDB.exe" /build "$(ProjectPath)" "/solution:$(SolutionPath)" "/config:$(Configuration)" "/platform:$(Platform)"</NMakeBuildCommandLine>
     <NMakeCleanCommandLine>"$(VISUALGDB_DIR)\VisualGDB.exe" /clean "$(ProjectPath)" "/solution:$(SolutionPath)" "/config:$(Configuration)" "/platform:$(Platform)"</NMakeCleanCommandLine>
     <NMakeReBuildCommandLine>"$(VISUALGDB_DIR)\VisualGDB.exe" /rebuild "$(ProjectPath)" "/solution:$(SolutionPath)" "/config:$(Configuration)" "/platform:$(Platform)"</NMakeReBuildCommandLine>
-    <NMakeOutput>$(ProjectDir)HMC5883L-Debug.vgdbsettings</NMakeOutput>
+    <NMakeOutput>$(ProjectDir)mpu6050-Debug.vgdbsettings</NMakeOutput>
     <IncludePath />
     <ReferencePath />
     <LibraryPath />
@@ -54,7 +54,7 @@
     <NMakeBuildCommandLine>"$(VISUALGDB_DIR)\VisualGDB.exe" /build "$(ProjectPath)" "/solution:$(SolutionPath)" "/config:$(Configuration)" "/platform:$(Platform)"</NMakeBuildCommandLine>
     <NMakeCleanCommandLine>"$(VISUALGDB_DIR)\VisualGDB.exe" /clean "$(ProjectPath)" "/solution:$(SolutionPath)" "/config:$(Configuration)" "/platform:$(Platform)"</NMakeCleanCommandLine>
     <NMakeReBuildCommandLine>"$(VISUALGDB_DIR)\VisualGDB.exe" /rebuild "$(ProjectPath)" "/solution:$(SolutionPath)" "/config:$(Configuration)" "/platform:$(Platform)"</NMakeReBuildCommandLine>
-    <NMakeOutput>$(ProjectDir)HMC5883L-Release.vgdbsettings</NMakeOutput>
+    <NMakeOutput>$(ProjectDir)mpu6050-Release.vgdbsettings</NMakeOutput>
     <IncludePath />
     <ReferencePath />
     <LibraryPath />
@@ -63,19 +63,19 @@
   <ItemDefinitionGroup>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <None Include="HMC5883L-Debug.vgdbsettings" />
-    <None Include="HMC5883L-Release.vgdbsettings" />
     <None Include="Makefile" />
+    <None Include="mpu6050-Debug.vgdbsettings" />
+    <None Include="mpu6050-Release.vgdbsettings" />
     <None Include="release.mak" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\arduino_i2c.h" />
-    <ClInclude Include="include\hmc5883l.h" />
+    <ClInclude Include="include\mpu6050.h" />
     <ClInclude Include="include\sensor.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\hmc5883l.cpp" />
     <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\mpu6050.cpp" />
     <ClCompile Include="src\sensor.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
