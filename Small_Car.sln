@@ -10,6 +10,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "car", "car\car.vcxproj", "{
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Aecf", "Aecf\Aecf.vcxproj", "{CD2C7B7D-E52D-45B3-A4A4-CFDC2B016DBE}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Collect", "Collect\Collect.vcxproj", "{FA4B672A-D63B-4A53-A7A4-B620284F12D2}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x86 = Debug|x86
@@ -40,6 +42,12 @@ Global
 		{CD2C7B7D-E52D-45B3-A4A4-CFDC2B016DBE}.Release|x64.ActiveCfg = Release|Win32
 		{CD2C7B7D-E52D-45B3-A4A4-CFDC2B016DBE}.Release|x86.ActiveCfg = Release|Win32
 		{CD2C7B7D-E52D-45B3-A4A4-CFDC2B016DBE}.Release|x86.Build.0 = Release|Win32
+		{FA4B672A-D63B-4A53-A7A4-B620284F12D2}.Debug|x64.ActiveCfg = Debug|Win32
+		{FA4B672A-D63B-4A53-A7A4-B620284F12D2}.Debug|x86.ActiveCfg = Debug|Win32
+		{FA4B672A-D63B-4A53-A7A4-B620284F12D2}.Debug|x86.Build.0 = Debug|Win32
+		{FA4B672A-D63B-4A53-A7A4-B620284F12D2}.Release|x64.ActiveCfg = Release|Win32
+		{FA4B672A-D63B-4A53-A7A4-B620284F12D2}.Release|x86.ActiveCfg = Release|Win32
+		{FA4B672A-D63B-4A53-A7A4-B620284F12D2}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
