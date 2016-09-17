@@ -14,7 +14,8 @@ public:
     void operator=(const int & t);
     SensorRaw operator-(const SensorRaw & t) const;
     SensorScale operator*(const float & t) const;
-//    SensorScale operator*(const SensorScale & t) const;
+    //Vector3 operator*(const Vector3& a) const;
+    //SensorScale operator*(const SensorScale & t) const;
 };
 class SensorScale
 {

@@ -24,11 +24,10 @@ public:
 	void set_scale(M_SCALE scale); //配置设备的量程范围
 	void set_measurement_mode(); //配置设备的测量模式
 	MagnetometerScale calibrateMag();
-
-
-private:
+	//-----------------------------------------------
     static const uint8_t DEVRICE_ADDRESS = 0x1E; //hmc5883l设备地址(0x3C>>1 == 0x1E)
     float mScale; //输出分辨率
     Arduino_i2c i2c;
+	float Xs, Ys, Xb, Yb;
 };
 #endif // HMC5883L_H

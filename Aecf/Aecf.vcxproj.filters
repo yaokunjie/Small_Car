@@ -31,33 +31,57 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="include\AHRS.h">
+      <Filter>Header files</Filter>
+    </ClInclude>
     <ClInclude Include="include\arduino_i2c.h">
       <Filter>Header files</Filter>
     </ClInclude>
     <ClInclude Include="include\hmc5883l.h">
       <Filter>Header files</Filter>
     </ClInclude>
+    <ClInclude Include="include\motorcontrol.h">
+      <Filter>Header files</Filter>
+    </ClInclude>
     <ClInclude Include="include\mpu6050.h">
+      <Filter>Header files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Quaternion.h">
       <Filter>Header files</Filter>
     </ClInclude>
     <ClInclude Include="include\sensor.h">
       <Filter>Header files</Filter>
     </ClInclude>
-    <ClInclude Include="include\vector3.hpp">
+    <ClInclude Include="include\transform.h">
+      <Filter>Header files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\vector3.h">
       <Filter>Header files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\AHRS.cpp">
+      <Filter>Source files</Filter>
+    </ClCompile>
     <ClCompile Include="src\hmc5883l.cpp">
       <Filter>Source files</Filter>
     </ClCompile>
     <ClCompile Include="src\main.cpp">
       <Filter>Source files</Filter>
     </ClCompile>
+    <ClCompile Include="src\motorcontrol.cpp">
+      <Filter>Source files</Filter>
+    </ClCompile>
     <ClCompile Include="src\mpu6050.cpp">
       <Filter>Source files</Filter>
     </ClCompile>
+    <ClCompile Include="src\Quaternion.cpp">
+      <Filter>Source files</Filter>
+    </ClCompile>
     <ClCompile Include="src\sensor.cpp">
+      <Filter>Source files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\transform.cpp">
       <Filter>Source files</Filter>
     </ClCompile>
   </ItemGroup>

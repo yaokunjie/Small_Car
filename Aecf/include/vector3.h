@@ -2,6 +2,7 @@
 #define _VECTOR3_H
 
 #include <math.h>
+#include "sensor.h"
 
 class Vector3 {
 public:
@@ -22,6 +23,11 @@ public:
 		x = a.x; y = a.y; z = a.z;
 		return *this;
 	}
+	Vector3 &operator =(const float& a)
+	{
+	    x = a;  y = a;  z = a;
+	    return *this;
+	}
 	// Check for equality
 	bool operator ==(const Vector3 &a) const {
 		return x == a.x && y == a.y && z == a.z;
@@ -34,7 +40,7 @@ public:
 	void zero() { x = y = z = 0.0f; }
 	// Unary minus returns the negative of the vector
 	Vector3 operator - () const { return Vector3(-x, -y, -z); }
-	// Binary + and ¨C add and subtract vectors
+	// Binary + and Â¨C add and subtract vectors
 	Vector3 operator +(const Vector3 &a) const {
 		return Vector3(x + a.x, y + a.y, z + a.z);
 	}
@@ -66,6 +72,10 @@ public:
 	Vector3 &operator /=(float a) {
 		float oneOverA = 1.0f / a;
 		x *= oneOverA; y *= oneOverA; z *= oneOverA;
+		return *this;
+	}
+	Vector3 &operator =(const SensorScale &a) {
+		x = a.XAis; y = a.YAis; z = a.ZAis;
 		return *this;
 	}
 	// Normalize the vector
@@ -111,6 +121,10 @@ inline float distance(const Vector3 &a, const Vector3 &b) {
 	float dy = a.y - b.y;
 	float dz = a.z - b.z;
 	return float(sqrt(dx*dx + dy*dy + dz*dz));
+}
+inline float pointProduct(const Vector3 &a, const Vector3 &b)
+{
+	return (a.x*b.x+a.y*b.y+a.z*b.z);
 }
 /////////////////////////////////////////////////////////////////////////////
 //

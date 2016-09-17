@@ -69,17 +69,25 @@
     <None Include="release.mak" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="include\AHRS.h" />
     <ClInclude Include="include\arduino_i2c.h" />
     <ClInclude Include="include\hmc5883l.h" />
+    <ClInclude Include="include\motorcontrol.h" />
     <ClInclude Include="include\mpu6050.h" />
+    <ClInclude Include="include\Quaternion.h" />
     <ClInclude Include="include\sensor.h" />
-    <ClInclude Include="include\vector3.hpp" />
+    <ClInclude Include="include\transform.h" />
+    <ClInclude Include="include\vector3.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\AHRS.cpp" />
     <ClCompile Include="src\hmc5883l.cpp" />
     <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\motorcontrol.cpp" />
     <ClCompile Include="src\mpu6050.cpp" />
+    <ClCompile Include="src\Quaternion.cpp" />
     <ClCompile Include="src\sensor.cpp" />
+    <ClCompile Include="src\transform.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -35,7 +35,7 @@ error:
 	$(error Invalid configuration, please check your inputs)
 endif
 
-SOURCEFILES := src/hmc5883l.cpp src/main.cpp src/mpu6050.cpp src/sensor.cpp
+SOURCEFILES := src/AHRS.cpp src/hmc5883l.cpp src/main.cpp src/motorcontrol.cpp src/mpu6050.cpp src/Quaternion.cpp src/sensor.cpp src/transform.cpp
 EXTERNAL_LIBS := 
 EXTERNAL_LIBS_COPIED := $(foreach lib, $(EXTERNAL_LIBS),$(BINARYDIR)/$(notdir $(lib)))
 
@@ -181,6 +181,10 @@ $(BINARYDIR)/%.o : %.cxx $(all_make_files) |$(BINARYDIR)
 #VisualGDB: GeneratedRules				#<--- All lines below are auto-generated
 
 
+$(BINARYDIR)/AHRS.o : src/AHRS.cpp $(all_make_files) |$(BINARYDIR)
+	$(CXX) $(CXXFLAGS) -c $< -o $@ -MD -MF $(@:.o=.dep)
+
+
 $(BINARYDIR)/hmc5883l.o : src/hmc5883l.cpp $(all_make_files) |$(BINARYDIR)
 	$(CXX) $(CXXFLAGS) -c $< -o $@ -MD -MF $(@:.o=.dep)
 
@@ -189,10 +193,22 @@ $(BINARYDIR)/main.o : src/main.cpp $(all_make_files) |$(BINARYDIR)
 	$(CXX) $(CXXFLAGS) -c $< -o $@ -MD -MF $(@:.o=.dep)
 
 
+$(BINARYDIR)/motorcontrol.o : src/motorcontrol.cpp $(all_make_files) |$(BINARYDIR)
+	$(CXX) $(CXXFLAGS) -c $< -o $@ -MD -MF $(@:.o=.dep)
+
+
 $(BINARYDIR)/mpu6050.o : src/mpu6050.cpp $(all_make_files) |$(BINARYDIR)
 	$(CXX) $(CXXFLAGS) -c $< -o $@ -MD -MF $(@:.o=.dep)
 
 
+$(BINARYDIR)/Quaternion.o : src/Quaternion.cpp $(all_make_files) |$(BINARYDIR)
+	$(CXX) $(CXXFLAGS) -c $< -o $@ -MD -MF $(@:.o=.dep)
+
+
 $(BINARYDIR)/sensor.o : src/sensor.cpp $(all_make_files) |$(BINARYDIR)
+	$(CXX) $(CXXFLAGS) -c $< -o $@ -MD -MF $(@:.o=.dep)
+
+
+$(BINARYDIR)/transform.o : src/transform.cpp $(all_make_files) |$(BINARYDIR)
 	$(CXX) $(CXXFLAGS) -c $< -o $@ -MD -MF $(@:.o=.dep)
 

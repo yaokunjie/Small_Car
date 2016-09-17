@@ -1,5 +1,4 @@
 #include "sensor.h"
-
 SensorRaw::SensorRaw()
 {
     this->XAis = 0;

@@ -8,6 +8,14 @@
 class MPU6050
 {
 public:
+
+        static const uint8_t DEVRICE_ADDRESS = 0x68; //MPU6050设备默认地址
+        int ACC_1G;
+        AcceleraterRaw acc_offset;
+        GyroscopeRaw gyr_offset;
+        Arduino_i2c I2C;
+        float acc_mScale; //加速度输出分辨率
+        float gyr_mScale; //陀螺仪输出分辨率
 		MPU6050();
 		AcceleraterRaw read_acc_raw();
 		GyroscopeRaw read_gyr_raw();
@@ -20,15 +28,6 @@ public:
 		void gyr_cor_offset(const int & callbrating_gyr_cycles);
 		void mpu_cor_offset();
 
-
-private:
-    static const uint8_t DEVRICE_ADDRESS = 0x68; //MPU6050设备默认地址
-    int ACC_1G;
-    AcceleraterRaw acc_offset;
-    GyroscopeRaw gyr_offset;
-    Arduino_i2c I2C;
-    float acc_mScale; //加速度输出分辨率
-    float gyr_mScale; //陀螺仪输出分辨率
 
 };
 
