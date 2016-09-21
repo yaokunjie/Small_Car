@@ -9,7 +9,6 @@
 #include "motorcontrol.h"
 #include "Arduino.h"
 #include "Wire.h"
-#include "Quaternion.h"
 #include "transform.h"
 #include <math.h>
 
@@ -19,12 +18,13 @@ float parameter[15] = {0.0f};
 MPU6050 mpu;
 HMC5883L hmc;
 MotorControl mc;
+Transform tf;
 AHRS ahrs(1/256, 1.0f, 1.0f);
 float error_theta = 0.0f;
 float error_r = 0.0f;
 float target_theta=.0f;
 bool data_produce_sign = true;
-Vector3 target(.0f, .0f, .0f), car(.0f, .0f, .0f), shadow(.0f, .0f, .0f);
+Vector3 target(.0f, .0f, .0f), car(.0f, .0f, .0f), direction(.0f, .0f, .0f);
 //--------------sq------------------------------
 boost::lockfree::spsc_queue<SensorRaw> gyr_sq(1000);
 boost::lockfree::spsc_queue<SensorRaw> mag_sq(1000);
@@ -145,6 +145,7 @@ void calculate()
     float deltat=0.0f, yaw = 0.0f;
 	//-----------------------
 	ahrs_init(); 
+	//target_theta = 30.0f;
     while(1)
     {
         if(gyr_sq.read_available() && mag_sq.read_available() && deltat_sq.read_available())
@@ -166,242 +167,172 @@ void calculate()
             //------get current rotate quaternion-------
             ahrs.update(degtorad(g_s), m_s);
 			yaw = ahrs.get_heading(); //get current yaw			
-			//----------更新误差角度--------
+
+			tf.correspondence("1");
+			target = Vector3(tf.goal_x, tf.goal_y, .0f);
+			car = Vector3(tf.car_x, tf.car_y, .0f);
+
+			direction = target - car;
+			direction.normalize(); // 归一化
+			target_theta = radtodeg(atan2(direction.x, direction.y));
+			//----------更新误差角度-----------
 			error_theta = target_theta + yaw;
-			cout << "error_theta : \t" << error_theta << "\n";
+			if (error_theta > 180)
+				error_theta = error_theta - 360.0f;
+			else if (error_theta < -180)
+				error_theta = error_theta + 360.0f;
+			//------------更新误差距离----------
+			error_r = distance(target, car);//unit cm
+			//----------------------------------
+			//cout << "error_theta : \t" << error_theta << "\n";
         }
 		if(!data_produce_sign)
 			break;
     }
 	cout << "calculate thread end\n";
 }
-void position()
-{
-	cout << "pisotion thread start\n";
-	Transform tf;
-	Vector3 target(.0f, .0f, .0f);
-	Vector3 car(.0f, .0f, .0f);
-	Vector3 shadow(.0f, .0f, .0f);
-	float target_r=.0f, shadow_r=.0f;
-	while(1)
-	{
-		tf.correspondence("1");
-		target = Vector3(tf.goal_x, tf.goal_y, 0.0f); //获得目标向量
-		car = Vector3(tf.car_x, tf.car_y, 0.0f); //获取小车向量
-		//----调试，将目标向量固定------------
-		target.x = 210.0f; //unit cm
-		target.y = 210.0f; //unit cm
-		//--------------------------------------
-		target_r = vectorMag(target);
-		target_theta = radtodeg(PI/2 - atan2(target.y, target.x)); //目标向量极坐标
-		shadow = target * (pointProduct(target, car) / (target_r*target_r)); //投影坐标
-		shadow_r = vectorMag(shadow);
-		//------更新误差距离---------------
-		error_r = target_r - shadow_r;
-		cout << "error_r:\t" << error_r << "cm" << endl;
-		if(!data_produce_sign)
-			break;
-	}
-	cout << "position thread end\n";
-}
+//void position()
+//{
+//	cout << "pisotion thread start\n";
+//	Vector3 target(.0f, .0f, .0f);
+//	Vector3 car(.0f, .0f, .0f);
+//	Vector3 shadow(.0f, .0f, .0f);
+//	float target_r, shadow_r;
+//	while(true)
+//	{
+//		tf.correspondence("1");
+//		cout << "receive over!!\tcar_x" << tf.car_x << "car_y:\t" << tf.car_y << "\n";
+//		target = Vector3(tf.goal_x, tf.goal_y, 0.0f); //获得目标向量
+//		car = Vector3(tf.car_x, tf.car_y, 0.0f); //获取小车向量
+//		//----调试，将目标向量固定------------
+//		target.x = 210.0f; //unit cm
+//		target.y = 210.0f; //unit cm
+//		//--------------------------------------
+//		target_r = vectorMag(target);
+//		target_theta = radtodeg(PI/2 - atan2(target.y, target.x)); //目标向量极坐标
+//		shadow = target * (pointProduct(target, car) / (target_r*target_r)); //投影坐标
+//		shadow_r = vectorMag(shadow);
+//		//------更新误差距离---------------
+//		error_r = target_r - shadow_r;
+//		//cout << "error_r:\t" << error_r << "cm" << endl;
+//		if(!data_produce_sign)
+//			break;
+//	}
+//	cout << "position thread end\n";
+//}
 //静态目标控制函数
 void control()
 {
 	cout << "static target control thread start\n";
-	while(1)
+	float car_x=.0f, car_y=.0f;
+	while (1)
 	{
-		if(error_theta <=3 && error_theta >= -3)
+		if (car_x != tf.car_x && car_y != tf.car_y)
 		{
+			if (error_theta <= 3 && error_theta >= -3)
+			{
+				if (!mc.mid_symbol)
+				{
+					mc.turn_mid();
+					delay(1);
+				}
+				if (!mc.stop_symbol)
+				{
+					mc.motorGoStop();
+					delay(1);
+				}
+				if (!mc.low_symbol)
+				{
+					mc.adjust_speed(122);
+					delay(1);
+				}
+				if (error_r <= 10 && error_r >= -10)
+				{
+					if (!mc.stop_symbol)
+					{
+						mc.motorGoStop();
+						delay(1);
+					}
+				}
+				else if (error_r > 10)
+				{
+					if (!mc.go_symbol)
+					{
+						mc.motorGoForward();
+						delay(1);
+					}
+				}
+				else
+				{
+					if (!mc.back_symbol)
+					{
+						mc.motorGoBack();
+						delay(1);
+					}
+				}
+			}
+			else if (error_theta > 3)
+			{
+				if (!mc.right_symbol)
+				{
+					mc.turn_right();
+					delay(1);
+				}
+				if (!mc.high_symbol)
+				{
+					mc.adjust_speed(254);
+					delay(1);
+				}
+				if (!mc.go_symbol)
+				{
+					mc.motorGoForward();
+					delay(1);
+				}
+			}
+			else
+			{
+				if (!mc.left_symbol)
+				{
+					mc.turn_left();
+					delay(1);
+				}
+				if (!mc.high_symbol)
+				{
+					mc.adjust_speed(254);
+					delay(1);
+				}
+				if (!mc.go_symbol)
+				{
+					mc.motorGoForward();
+					delay(1);
+				}
+			}
+			if (!data_produce_sign)
+			{
+				mc.turn_mid();
+				delay(1);
+				mc.motorGoStop();
+				delay(1);
+				break;
+			}
+		}else
+		{
+			//cout << "no position!!!\tcar_x:" << tf.car_x << "\tcar_y:" << tf.car_y << "\n";
+			//cout << "no position!!\n";
 			if(!mc.mid_symbol)
 			{
 				mc.turn_mid();
 				delay(1);
 			}
-			if(!mc.low_symbol)
+			if(!mc.stop_symbol)
 			{
-				mc.adjust_speed(122);
+				mc.motorGoStop();
 				delay(1);
 			}
-			if(error_r<=10 && error_r>=-10)
-			{
-				if(!mc.stop_symbol)
-				{
-					mc.motorGoStop();
-					delay(1);
-				}
-			}else if(error_r > 10)
-			{
-				if(!mc.go_symbol)
-				{
-					mc.motorGoForward();
-					delay(1);
-				}
-			}else
-			{
-				if(!mc.back_symbol)
-				{
-					mc.motorGoBack();
-					delay(1);
-				}
-			}
-		}else if(error_theta > 3)
-		{
-			if(!mc.right_symbol)
-			{
-				mc.turn_right();
-				delay(1);
-			}
-			if(!mc.high_symbol)
-			{
-				mc.adjust_speed(254);
-				delay(1);
-			}
-			if(!mc.go_symbol)
-			{
-				mc.motorGoForward();
-				delay(1);
-				cout << "go go go!!!\n";
-			}
-		}else
-		{
-			if(!mc.left_symbol)
-			{
-				mc.turn_left();
-				delay(1);
-			}
-			if(!mc.high_symbol)
-			{
-				mc.adjust_speed(254);
-				delay(1);
-			}
-			if(!mc.go_symbol)
-			{
-				mc.motorGoForward();
-				delay(1);
-			}
-		}
-		if(!data_produce_sign)
-		{
-			mc.turn_mid();
-			delay(1);
-			mc.motorGoStop();
-			delay(1);
-			break;
 		}
 	}
 	cout << "control thread end\n";
 }
-//动态控制函数
-//void control()
-//{
-//	cout << "trend control thread start\n";
-//	while(1)
-//	{
-//		if(error_theta<=3 && error_theta>=-3)
-//		{
-//			if(!mc.mid_symbol)
-//			{
-//				mc.turn_mid();
-//				delay(1);
-//			}
-//			mc.adjust_speed(122);
-//			delay(1);
-//			if(error_r>10)
-//			{
-//				if(!mc.go_symbol)
-//				{
-//					mc.motorGoForward();
-//					delay(1);
-//				}
-//			}else if(error_r<-10)
-//			{
-//				if(!mc.back_symbol)
-//				{
-//					mc.motorGoBack();
-//					delay(1);
-//				}
-//			}else
-//			{
-//				if(!mc.stop_symbol)
-//				{
-//					mc.motorGoStop();
-//					delay(1);
-//				}
-//			}
-//		}else if(error_theta>3)
-//		{
-//			if((target.y-car.y)>10 || (target.y-car.y)<-10)
-//			{
-//				if(!mc.right_symbol)
-//				{
-//					mc.turn_right();
-//					delay(1);
-//				}
-//				mc.adjust_speed(255);
-//				delay(1);
-//				if(!mc.go_symbol)
-//				{
-//					mc.motorGoForward();
-//					delay(1);
-//				}
-//			}else
-//			{
-//				if(!mc.left_symbol)
-//				{
-//					mc.turn_left();
-//					delay(1);
-//				}
-//				mc.adjust_speed(255);
-//				delay(1);
-//				if(!mc.back_symbol)
-//				{
-//					mc.motorGoBack();
-//					delay(1);
-//				}
-//			}
-//		}else
-//		{
-//			if(error_r>10)
-//			{
-//				if(!mc.left_symbol)
-//				{
-//					mc.turn_left();
-//					delay(1);
-//				}
-//				mc.adjust_speed(255);
-//				delay(1);
-//				if(!mc.go_symbol)
-//				{
-//					mc.motorGoForward();
-//					delay(1);
-//				}
-//			}else
-//			{
-//				if(!mc.right_symbol)
-//				{
-//					mc.turn_right();
-//					delay(1);
-//				}
-//				mc.adjust_speed(255);
-//				delay(1);
-//				if(!mc.back_symbol)
-//				{
-//					mc.motorGoBack();
-//					delay(1);
-//				}
-//			}
-//		}
-//		if(!data_produce_sign)
-//		{
-//			mc.turn_mid();
-//			delay(1);
-//			mc.motorGoStop();
-//			delay(1);
-//			break;
-//		}
-//	}
-//	cout << "trend control thread end\n";
-//}
 void setup()
 {
     mc.serialInit();
@@ -420,6 +351,7 @@ void setup()
 	hmc.Ys = parameter[7];
 	hmc.Xb = parameter[8];
 	hmc.Yb = parameter[9];
+	tf.init_socket();
 }
 
 void loop(){}
@@ -447,10 +379,12 @@ int main()
 		 << "Init Sample numbers : " << parameter[10] << "\n";
 	parameterFin.close();
     setup();
-	thread data_produce_thread(data_producer), calculate_thread(calculate), control_thread(control), position_thread(position);
+	thread data_produce_thread(data_producer), calculate_thread(calculate);
+	thread control_thread(control);
+	//thread position_thread(position);
 	data_produce_thread.join();
 	calculate_thread.join();
 	control_thread.join();
-	position_thread.join();
+	//position_thread.join();
     return 0;
 }

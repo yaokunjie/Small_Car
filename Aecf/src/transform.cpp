@@ -3,6 +3,8 @@
 using namespace std;
 Transform::Transform()
 {
+	car_x = .0f;
+	car_y = .0f;
 }
 
 Transform::~Transform()
@@ -16,13 +18,18 @@ void Transform::init_socket()
        // struct sockaddr_in server_addr;
       //  struct hostent *host;
         int portnumber,nbytes;
-        host=gethostbyname("192.168.1.106");
-        portnumber=6666;
+        host=gethostbyname("192.168.1.101");
+        portnumber=7777;
         sockfd=socket(AF_INET,SOCK_STREAM,0);
         bzero(&server_addr,sizeof(server_addr));
         server_addr.sin_family=AF_INET;
         server_addr.sin_port=htons(portnumber);
         server_addr.sin_addr=*((struct in_addr *)host->h_addr);
+		if(connect(sockfd,(struct sockaddr *)(&server_addr),sizeof(struct sockaddr))==-1)
+		{
+		fprintf(stderr,"Connect error:%s\n",strerror(errno));
+		exit(1);
+		}
 }
 void Transform::recv_data(char *recvbuffer)
 {
@@ -37,7 +44,7 @@ void Transform::recv_data(char *recvbuffer)
 }
 void Transform::send_command(char*sendbuffer)
 {
-
+	cout << "send_command start\n";
     if(connect(sockfd,(struct sockaddr *)(&server_addr),sizeof(struct sockaddr))==-1)
     {
     fprintf(stderr,"Connect error:%s\n",strerror(errno));
@@ -86,11 +93,11 @@ void Transform::extract()
 void Transform::correspondence(char*sendbuffer)
 {
     char recv[50];
-    printf("working ..");
-    init_socket();
-    send_command(sendbuffer);
-    recv_data(recv);
+    //printf("working ..\n");
+	recv_data(recv);
+	//cout << "send_command ending\n";
     extract();
+
 }
 
 

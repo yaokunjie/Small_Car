@@ -18,6 +18,7 @@ class Transform
     void correspondence(char*sendbuffer);
     float car_x, car_y;
 	float goal_x, goal_y;
+	void init_socket();
     private:
        int sockfd;
        struct sockaddr_in server_addr;
@@ -25,7 +26,7 @@ class Transform
        char *recv_str;
        char *cut_str;
        bool flag;
-       void init_socket();
+       
        void send_command(char *sendbuffer);
        void recv_data(char *recvbuffer);
        void extract();
